@@ -1,6 +1,7 @@
 # S3do
 
 [![Build Status](https://github.com/robvanderleek/s3do/workflows/CICD/badge.svg)](https://github.com/robvanderleek/s3do/actions)
+[![BCH compliance](https://bettercodehub.com/edge/badge/robvanderleek/s3do?branch=main)](https://bettercodehub.com/)
 [![DockerHub image pulls](https://img.shields.io/docker/pulls/robvanderleek/s3do)](https://hub.docker.com/repository/docker/robvanderleek/s3do)
 
 A collection of S3 commands.
@@ -35,11 +36,11 @@ $ ./s3do.py
 From a complete bucket:
 
 ```shell
-$ docker run -v /Users/rob/.aws:/root/.aws s3do inventory archpi.dabase.com 
+$ docker run -v $HOME/.aws:/root/.aws s3do inventory archpi.dabase.com 
 ```
 
 From a bucket and prefix:
 
 ```shell
-$ docker run -v /Users/rob/.aws:/root/.aws s3do inventory archpi.dabase.com images
+$ docker run -v $HOME/.aws:/root/.aws s3do inventory archpi.dabase.com images
 ```

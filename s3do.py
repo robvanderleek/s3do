@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import logging
 import sys
 
 import click
@@ -34,4 +35,5 @@ cli_entry_point.add_command(tag.tag)
 cli_entry_point.add_command(inventory.inventory)
 
 if __name__ == '__main__':
+    logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s')
     cli_entry_point()
