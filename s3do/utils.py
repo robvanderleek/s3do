@@ -42,7 +42,7 @@ def do_for_all_objects_all_versions(client, bucket, prefix, func):
         key_marker = object_list['NextKeyMarker'] if has_more else None
 
 
-def do_for_all_objects(client, bucket, prefix, func):
+def do_for_all_objects(client, bucket: str, prefix, func):
     has_more = True
     token = None
     while has_more:

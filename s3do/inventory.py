@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError, NoCredentialsError
 from s3do.utils import do_for_all_objects
 
 
-def get_handler(bucket):
+def get_callback(bucket):
     def print_object(o):
         print(f'{bucket},{o["Key"]}')
 
@@ -20,6 +20,6 @@ def get_handler(bucket):
 def inventory(bucket, prefix):
     try:
         client = boto3.client('s3')
-        do_for_all_objects(client, bucket, prefix, get_handler(bucket))
+        do_for_all_objects(client, bucket, prefix, get_callback(bucket))
     except (ClientError, NoCredentialsError) as e:
         logging.error(e)

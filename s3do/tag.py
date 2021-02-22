@@ -7,7 +7,15 @@ from botocore.exceptions import ClientError, NoCredentialsError
 from s3do.utils import do_for_all_objects_all_versions
 
 
-def get_handler(client, bucket):
+def _tags_to_tagset(tags):
+    result = []
+    for t in tags:
+        parts = t.split('=', 1)
+        result.append({'Key': parts[0], 'Value': parts[1]})
+    return result
+
+
+def get_callback(client, bucket, tagset):
     def tag_object(o):
         retries = 3
         while retries > 0:
@@ -17,10 +25,7 @@ def get_handler(client, bucket):
                     Key=o['Key'],
                     VersionId=o['VersionId'],
                     Tagging={
-                        'TagSet': [
-                            {'Key': 'HealthData', 'Value': 'True'},
-                            {'Key': 'DataType', 'Value': 'Raw'}
-                        ]
+                        'TagSet': tagset
                     }
                 )
             except:
@@ -36,11 +41,9 @@ def get_handler(client, bucket):
 @click.argument('prefix', required=False)
 @click.option('--tag', '-t', required=True, multiple=True)
 def tag(bucket, prefix, tag):
-    target = bucket
-    if prefix:
-        target += f'/{prefix}'
     try:
         client = boto3.client('s3')
-        do_for_all_objects_all_versions(client, bucket, prefix, get_handler(client, bucket))
+        tagset = _tags_to_tagset(tag)
+        do_for_all_objects_all_versions(client, bucket, prefix, get_callback(client, bucket, tagset))
     except (ClientError, NoCredentialsError) as e:
         logging.error(e)

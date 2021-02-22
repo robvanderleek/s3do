@@ -4,10 +4,12 @@
 [![BCH compliance](https://bettercodehub.com/edge/badge/robvanderleek/s3do?branch=main)](https://bettercodehub.com/)
 [![DockerHub image pulls](https://img.shields.io/docker/pulls/robvanderleek/s3do)](https://hub.docker.com/repository/docker/robvanderleek/s3do)
 
-A collection of S3 commands.
+A collection of S3 commands for bulk operations.
 
 * [Installation](#installation)
-* [Usage](#usage)
+* [Commands](#commands)
+  * [Inventory](#inventory)
+  * [Tag](#tag)
 
 # Installation
 
@@ -29,18 +31,34 @@ $ pip install -r requirements.txt
 $ ./s3do.py
 ```
 
-# Usage
+# Commands
 
-## Create an inventory file
+## Inventory
 
-From a complete bucket:
+Create an inventory file for all objects in a bucket:
 
 ```shell
 $ docker run -v $HOME/.aws:/root/.aws s3do inventory archpi.dabase.com 
 ```
 
-From a bucket and prefix:
+Create an inventory file for all objects in a bucket that match the `images` 
+prefix:
 
 ```shell
 $ docker run -v $HOME/.aws:/root/.aws s3do inventory archpi.dabase.com images
+```
+
+## Tag
+
+Tag all objects in a bucket with the tag `foo=bar`:
+
+```shell
+$ docker run -v $HOME/.aws:/root/.aws s3do tag --tag foo=bar archpi.dabase.com 
+```
+
+Tag all objects that match the `images` prefix with the tags `foo=bar` and 
+`spam=eggs`:
+
+```shell
+$ docker run -v $HOME/.aws:/root/.aws s3do tag --tag foo=bar --tag spam=eggs inventory archpi.dabase.com images
 ```
