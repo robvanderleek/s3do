@@ -1,3 +1,4 @@
+import gzip
 import logging
 
 import boto3
@@ -14,12 +15,33 @@ def _get_callback(bucket):
     return print_object
 
 
+def _load_from_symlink_file(client, bucket, symlink_file, func):
+    obj = client.get_object(Bucket=bucket, Key=symlink_file)
+    string_bytes = obj['Body'].read()
+    string = bytes.decode(string_bytes)
+    lines = string.split('\n')
+    for line in lines:
+        if line.startswith('s3://') and line.endswith('.csv.gz'):
+            bucket, key = line.replace('s3://', '').split('/', 1)
+            obj = client.get_object(Bucket=bucket, Key=key)
+            zipped_bytes = obj['Body'].read()
+            func(gzip.decompress(zipped_bytes).decode())
+
+
 @click.command()
 @click.argument('bucket')
-@click.argument('prefix', required=False)
-def inventory(bucket, prefix):
+@click.option('-s', '--symlink-file')
+@click.option('-p', '--prefix')
+def inventory(bucket, symlink_file, prefix):
+    """List inventory from Bucket"""
     try:
         client = boto3.client('s3')
-        do_for_all_objects(client, bucket, prefix, _get_callback(bucket))
+        if symlink_file:
+            def print_callback(data):
+                print(data, end='')
+
+            _load_from_symlink_file(client, bucket, symlink_file, print_callback)
+        else:
+            do_for_all_objects(client, bucket, prefix, _get_callback(bucket))
     except (ClientError, NoCredentialsError) as e:
         logging.error(e)

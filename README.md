@@ -55,7 +55,14 @@ $ docker run -e AWS_ACCESS_KEY_ID='...' -e AWS_SECRET_ACCESS_KEY='...' -e AWS_SE
 
 ## Inventory
 
-Create an inventory file for all objects in a bucket:
+An inventory file contains on each line a comma separated pair of `"<bucket name>","<object key>`. For example:
+
+```
+"MyBucket","path/to/file.txt"
+"MyBycket","path/to/another/file.txt"
+```
+
+To create an inventory file for all objects in a bucket run:
 
 ```shell
 $ docker run -v $HOME/.aws:/root/.aws robvanderleek/s3do inventory archpi.dabase.com 

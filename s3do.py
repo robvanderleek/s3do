@@ -31,8 +31,8 @@ def cli_entry_point():
     pass
 
 
-cli_entry_point.add_command(tag.tag)
 cli_entry_point.add_command(inventory.inventory)
+cli_entry_point.add_command(tag.tag)
 
 if __name__ == '__main__':
     logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s')
